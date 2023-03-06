@@ -10,16 +10,16 @@ pipeline {
         }
         stage('Build') {
             steps {
-                //sh './mvnw clean package'
-                sh 'false' //true
+                sh './mvnw clean package'
+                //sh 'true' //true
             }
 
             post {
                 always {
-                    // junit '**/target/surefire-reports/TEST-*.xml'
-                    // archiveArtifacts 'target/*.jar'
-                // }
-                // changed {
+                    junit '**/target/surefire-reports/TEST-*.xml'
+                    archiveArtifacts 'target/*.jar'
+                }
+                 changed {
                     emailext attachLog: true, body: "Please go to ${BUILD_URL} and verify the build", compressLog: true, recipientProviders: [upstreamDevelopers(), requestor()], subject: "Job \'${JOB_NAME}\' (${BUILD_NUMBER}) ${currentBuild.result}", to:"test@jenkins"
                 }
             }
